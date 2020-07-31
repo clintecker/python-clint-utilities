@@ -11,6 +11,10 @@ from dateutil.parser import parse
 from dateutil.tz import tzoffset, tzutc
 import requests
 
+VERSION = "1.0.0"
+__version__ = VERSION
+version = [1, 0, 0]
+
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
 
