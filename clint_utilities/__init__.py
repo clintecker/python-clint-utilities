@@ -2,6 +2,7 @@
 import argparse
 import datetime
 import logging
+from logging.config import dictConfig
 import socket
 import time
 from typing import Callable, Dict, List, Optional, Type
@@ -11,9 +12,10 @@ from dateutil.parser import parse
 from dateutil.tz import tzoffset, tzutc
 import requests
 
-VERSION = "1.0.0"
+
+VERSION = "1.0.1"
 __version__ = VERSION
-version = [1, 0, 0]
+version = [1, 0, 1]
 
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
@@ -184,3 +186,30 @@ def assert_raises(fn, args, kwargs, exc):
     except Exception:
         assert False, "Did not raise %s" % exc
     assert False, "Did not raise %s" % exc
+
+
+def setup_logging(log_level: str, extra_loggers: Optional[Dict] = None):
+    default_loggers: Dict[str, Dict] = {}
+    loggers = extra_loggers and {**default_loggers, **extra_loggers} or default_loggers
+    configuration = {
+        "version": 1,
+        "formatters": {
+            "default": {
+                "format": "%(asctime)s [%(levelname)s] [%(request_id)s]"
+                " [%(http_method)s %(path)s] → %(name)s.%(funcName)s:"
+                "%(lineno)s » %(message)s",
+                "class": "weatherman.framework.RequestFormatter",
+            }
+        },
+        "handlers": {
+            "wsgi": {
+                "level": log_level,
+                "class": "logging.StreamHandler",
+                "stream": "ext://flask.logging.wsgi_errors_stream",
+                "formatter": "default",
+            }
+        },
+        "loggers": loggers,
+    }
+    dictConfig(configuration)
+    logger.debug("Logging configuration: %s", configuration)
