@@ -295,7 +295,7 @@ def test_setup_logging(mock_dict_config):
         extra_loggers={
             "cool-boiz.requests": {
                 "level": "DEBUG",
-                "handlers": ["wsgi"],
+                "handlers": ["default"],
                 "propagate": True,
             }
         },
@@ -312,17 +312,16 @@ def test_setup_logging(mock_dict_config):
                 }
             },
             "handlers": {
-                "wsgi": {
+                "default": {
                     "level": "DEBUG",
                     "class": "logging.StreamHandler",
-                    "stream": "ext://flask.logging.wsgi_errors_stream",
                     "formatter": "default",
                 }
             },
             "loggers": {
                 "cool-boiz.requests": {
                     "level": "DEBUG",
-                    "handlers": ["wsgi"],
+                    "handlers": ["default"],
                     "propagate": True,
                 }
             },
@@ -337,7 +336,7 @@ def test_setup_logging_no_request_class(mock_dict_config):
         extra_loggers={
             "cool-boiz.requests": {
                 "level": "DEBUG",
-                "handlers": ["wsgi"],
+                "handlers": ["default",],
                 "propagate": True,
             }
         },
@@ -348,17 +347,16 @@ def test_setup_logging_no_request_class(mock_dict_config):
             "version": 1,
             "formatters": {"default": {"format": "%(asctime)s: %(message)s",}},
             "handlers": {
-                "wsgi": {
+                "default": {
                     "level": "DEBUG",
                     "class": "logging.StreamHandler",
-                    "stream": "ext://flask.logging.wsgi_errors_stream",
                     "formatter": "default",
                 }
             },
             "loggers": {
                 "cool-boiz.requests": {
                     "level": "DEBUG",
-                    "handlers": ["wsgi"],
+                    "handlers": ["default"],
                     "propagate": True,
                 }
             },

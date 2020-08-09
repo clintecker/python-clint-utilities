@@ -13,9 +13,9 @@ from dateutil.tz import tzoffset, tzutc
 import requests
 
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 __version__ = VERSION
-version = [1, 0, 2]
+version = [1, 0, 3]
 
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
@@ -204,10 +204,9 @@ def setup_logging(
         "version": 1,
         "formatters": {"default": {"format": msg_format}},
         "handlers": {
-            "wsgi": {
+            "default": {
                 "level": log_level,
                 "class": "logging.StreamHandler",
-                "stream": "ext://flask.logging.wsgi_errors_stream",
                 "formatter": "default",
             }
         },
