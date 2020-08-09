@@ -22,6 +22,7 @@ from clint_utilities import (
     parse_utc_timestamp,
     RequestError,
     RequestSuccess,
+    setup_logging,
 )
 
 
@@ -284,4 +285,82 @@ def test_assert_raises():
         args=tuple(),
         kwargs=dict(fn=oops3, args=tuple(), kwargs={}, exc=ValueError),
         exc=AssertionError,
+    )
+
+
+@mock.patch("clint_utilities.dictConfig")
+def test_setup_logging(mock_dict_config):
+    setup_logging(
+        "DEBUG",
+        extra_loggers={
+            "cool-boiz.requests": {
+                "level": "DEBUG",
+                "handlers": ["wsgi"],
+                "propagate": True,
+            }
+        },
+        msg_format="%(asctime)s: %(message)s",
+        formatter_class_name="project.utils.RequestFormatter",
+    )
+    mock_dict_config.assert_called_once_with(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "%(asctime)s: %(message)s",
+                    "class": "project.utils.RequestFormatter",
+                }
+            },
+            "handlers": {
+                "wsgi": {
+                    "level": "DEBUG",
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://flask.logging.wsgi_errors_stream",
+                    "formatter": "default",
+                }
+            },
+            "loggers": {
+                "cool-boiz.requests": {
+                    "level": "DEBUG",
+                    "handlers": ["wsgi"],
+                    "propagate": True,
+                }
+            },
+        }
+    )
+
+
+@mock.patch("clint_utilities.dictConfig")
+def test_setup_logging_no_request_class(mock_dict_config):
+    setup_logging(
+        "DEBUG",
+        extra_loggers={
+            "cool-boiz.requests": {
+                "level": "DEBUG",
+                "handlers": ["wsgi"],
+                "propagate": True,
+            }
+        },
+        msg_format="%(asctime)s: %(message)s",
+    )
+    mock_dict_config.assert_called_once_with(
+        {
+            "version": 1,
+            "formatters": {"default": {"format": "%(asctime)s: %(message)s",}},
+            "handlers": {
+                "wsgi": {
+                    "level": "DEBUG",
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://flask.logging.wsgi_errors_stream",
+                    "formatter": "default",
+                }
+            },
+            "loggers": {
+                "cool-boiz.requests": {
+                    "level": "DEBUG",
+                    "handlers": ["wsgi"],
+                    "propagate": True,
+                }
+            },
+        }
     )

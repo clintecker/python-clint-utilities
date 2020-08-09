@@ -5,7 +5,7 @@ import logging
 from logging.config import dictConfig
 import socket
 import time
-from typing import Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, List, Optional, Type
 
 # Third Party Code
 from dateutil.parser import parse
@@ -13,9 +13,9 @@ from dateutil.tz import tzoffset, tzutc
 import requests
 
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 __version__ = VERSION
-version = [1, 0, 1]
+version = [1, 0, 2]
 
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
@@ -188,19 +188,21 @@ def assert_raises(fn, args, kwargs, exc):
     assert False, "Did not raise %s" % exc
 
 
-def setup_logging(log_level: str, extra_loggers: Optional[Dict] = None):
+def setup_logging(
+    log_level: str,
+    extra_loggers: Optional[Dict] = None,
+    msg_format: Optional[str] = None,
+    formatter_class_name: Optional[str] = None,
+):
     default_loggers: Dict[str, Dict] = {}
     loggers = extra_loggers and {**default_loggers, **extra_loggers} or default_loggers
-    configuration = {
+    msg_format = (
+        msg_format
+        or "%(asctime)s [%(levelname)s] %(name)s.%(funcName)s:%(lineno)s » %(message)s"
+    )
+    configuration: Dict[str, Any] = {
         "version": 1,
-        "formatters": {
-            "default": {
-                "format": "%(asctime)s [%(levelname)s] [%(request_id)s]"
-                " [%(http_method)s %(path)s] → %(name)s.%(funcName)s:"
-                "%(lineno)s » %(message)s",
-                "class": "weatherman.framework.RequestFormatter",
-            }
-        },
+        "formatters": {"default": {"format": msg_format}},
         "handlers": {
             "wsgi": {
                 "level": log_level,
@@ -211,5 +213,7 @@ def setup_logging(log_level: str, extra_loggers: Optional[Dict] = None):
         },
         "loggers": loggers,
     }
+    if formatter_class_name:
+        configuration["formatters"]["default"]["class"] = formatter_class_name
     dictConfig(configuration)
     logger.debug("Logging configuration: %s", configuration)
