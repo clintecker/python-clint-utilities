@@ -1,3 +1,7 @@
+# 1.1.1
+
+Incorrectly versioned things again so this version should get everything back in sync.
+
 # 1.1.0
 
 Changed the calling signautre of the `setupLogging` function and started testing on Python 3.9

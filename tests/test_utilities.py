@@ -43,6 +43,7 @@ def test_parse_utc_timestamp():
     assert datetime.datetime(
         2020, 7, 7, 15, 1, 56, tzinfo=tzoffset("Local", -21600)
     ) == parse_utc_timestamp(ts=1594155716, offset=-21600)
+    assert 1594155716 == parse_utc_timestamp(ts=1594155716, offset=-21600).timestamp()
 
 
 def test_datetime_to_timestamp():

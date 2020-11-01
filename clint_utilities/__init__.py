@@ -17,9 +17,9 @@ from dateutil.tz import tzoffset, tzutc
 import requests
 
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 __version__ = VERSION
-version = [1, 1, 0]
+version = [1, 1, 1]
 
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
@@ -50,10 +50,11 @@ class StoreError(RequestError):
 
 
 def parse_utc_timestamp(ts: int, offset: int):
-    dt = datetime.datetime.utcfromtimestamp(ts + offset)
-    tz = tzoffset(name="Local", offset=offset)
-    dt = dt.astimezone(tz=tz)
-    return dt
+    return (
+        datetime.datetime.utcfromtimestamp(ts)
+        .replace(tzinfo=datetime.timezone.utc)
+        .astimezone(tzoffset(name="Local", offset=offset))
+    )
 
 
 # TODO: Rename to `parse_date_string`
