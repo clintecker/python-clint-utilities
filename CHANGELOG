@@ -1,0 +1,23 @@
+# 1.1.0
+
+Changed the calling signautre of the `setupLogging` function and started testing on Python 3.9
+
+# 1.0.4
+
+Removal of dead code.
+
+# 1.0.3
+
+More logging fixes.
+
+# 1.0.2
+
+Making logging setup functional
+
+# 1.0.1
+
+Adding a logger setup function
+
+# 1.0.0
+
+Initial release!
