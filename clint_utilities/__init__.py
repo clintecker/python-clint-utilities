@@ -17,9 +17,9 @@ from dateutil.tz import tzoffset, tzutc
 import requests
 
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 __version__ = VERSION
-version = [1, 2, 0]
+version = [1, 2, 1]
 
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
