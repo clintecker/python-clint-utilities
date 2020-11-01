@@ -15,5 +15,10 @@ jobs:
         run: tox -e mypy
       - name: Lint Files (flake8)
         run: tox -e pep8
-      - name: Run Tox
+      - name: Coverage
         run: tox -e py,coverage
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: htmlcov/

@@ -20,5 +20,5 @@ jobs:
         run: tox -e mypy
       - name: Lint Files (flake8)
         run: tox -e pep8
-      - name: Run Tox
+      - name: Run Tests
         run: tox -e py
