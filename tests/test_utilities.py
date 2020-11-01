@@ -292,13 +292,6 @@ def test_assert_raises():
 def test_setup_logging(mock_dict_config):
     setup_logging(
         "DEBUG",
-        extra_loggers={
-            "cool-boiz.requests": {
-                "level": "DEBUG",
-                "handlers": ["default"],
-                "propagate": True,
-            }
-        },
         msg_format="%(asctime)s: %(message)s",
         formatter_class_name="project.utils.RequestFormatter",
     )
@@ -312,19 +305,26 @@ def test_setup_logging(mock_dict_config):
                 }
             },
             "handlers": {
-                "default": {
+                "console": {
                     "level": "DEBUG",
                     "class": "logging.StreamHandler",
                     "formatter": "default",
-                }
-            },
-            "loggers": {
-                "cool-boiz.requests": {
+                    "stream": "ext://sys.stdout",
+                },
+                "file": {
                     "level": "DEBUG",
-                    "handlers": ["default"],
-                    "propagate": True,
-                }
+                    "class": "logging.handlers.RotatingFileHandler",
+                    "formatter": "default",
+                    "filename": "error.log",
+                    "maxBytes": 1073741824,
+                },
             },
+            "root": {
+                "level": "DEBUG",
+                "handlers": ["console", "file"],
+                "propagate": True,
+            },
+            "disable_existing_loggers": True,
         }
     )
 
@@ -332,33 +332,32 @@ def test_setup_logging(mock_dict_config):
 @mock.patch("clint_utilities.dictConfig")
 def test_setup_logging_no_request_class(mock_dict_config):
     setup_logging(
-        "DEBUG",
-        extra_loggers={
-            "cool-boiz.requests": {
-                "level": "DEBUG",
-                "handlers": ["default",],
-                "propagate": True,
-            }
-        },
-        msg_format="%(asctime)s: %(message)s",
+        "DEBUG", msg_format="%(asctime)s: %(message)s",
     )
     mock_dict_config.assert_called_once_with(
         {
             "version": 1,
-            "formatters": {"default": {"format": "%(asctime)s: %(message)s",}},
+            "formatters": {"default": {"format": "%(asctime)s: %(message)s"}},
             "handlers": {
-                "default": {
+                "console": {
                     "level": "DEBUG",
                     "class": "logging.StreamHandler",
                     "formatter": "default",
-                }
-            },
-            "loggers": {
-                "cool-boiz.requests": {
+                    "stream": "ext://sys.stdout",
+                },
+                "file": {
                     "level": "DEBUG",
-                    "handlers": ["default"],
-                    "propagate": True,
-                }
+                    "class": "logging.handlers.RotatingFileHandler",
+                    "formatter": "default",
+                    "filename": "error.log",
+                    "maxBytes": 1073741824,
+                },
             },
+            "root": {
+                "level": "DEBUG",
+                "handlers": ["console", "file"],
+                "propagate": True,
+            },
+            "disable_existing_loggers": True,
         }
     )

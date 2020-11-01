@@ -211,18 +211,18 @@ def setup_logging(
     )
     configuration: Dict[str, Any] = {
         "version": 1,
-        "formatters": {"console": {"format": msg_format}},
+        "formatters": {"default": {"format": msg_format}},
         "handlers": {
             "console": {
                 "level": log_level,
                 "class": "logging.StreamHandler",
-                "formatter": "console",
+                "formatter": "default",
                 "stream": "ext://sys.stdout",
             },
             "file": {
                 "level": log_level,
                 "class": "logging.handlers.RotatingFileHandler",
-                "formatter": "console",
+                "formatter": "default",
                 "filename": "error.log",
                 "maxBytes": 1024 * 1024 * 1024,
             },
