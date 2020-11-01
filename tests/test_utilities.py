@@ -12,13 +12,13 @@ import responses
 from clint_utilities import (
     _PARSED_DATES,
     assert_raises,
-    date_string_to_timestamp,
-    datetime_to_timestamp,
+    date_string_to_date_timestamp,
+    datetime_to_date_timestamp,
     make_durable_get,
     make_durable_post,
     make_durable_request,
     parse_args,
-    parse_date,
+    parse_date_string,
     parse_utc_timestamp,
     RequestError,
     RequestSuccess,
@@ -30,12 +30,12 @@ def test_parse_date():
     assert len(_PARSED_DATES) == 0
     assert datetime.datetime(
         2020, 6, 20, 14, 39, 10, tzinfo=tzoffset(None, -21600)
-    ) == parse_date("2020-06-20T14:39:10-0600")
+    ) == parse_date_string("2020-06-20T14:39:10-0600")
     assert len(_PARSED_DATES) == 1
     # Test caching
     assert datetime.datetime(
         2020, 6, 20, 14, 39, 10, tzinfo=tzoffset(None, -21600)
-    ) == parse_date("2020-06-20T14:39:10-0600")
+    ) == parse_date_string("2020-06-20T14:39:10-0600")
     assert len(_PARSED_DATES) == 1
 
 
@@ -47,13 +47,13 @@ def test_parse_utc_timestamp():
 
 
 def test_datetime_to_timestamp():
-    assert 1592611200 == datetime_to_timestamp(
+    assert 1592611200 == datetime_to_date_timestamp(
         datetime.datetime(2020, 6, 20, 14, 39, 10)
     )
 
 
 def test_date_string_to_timestamp():
-    assert 1592611200 == date_string_to_timestamp("2020-06-20")
+    assert 1592611200 == date_string_to_date_timestamp("2020-06-20")
 
 
 def test_make_durable_request_num_attempts_value_error():

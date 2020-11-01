@@ -16,9 +16,19 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install Tox and any other packages
         run: pip install tox
+      - name: Load Cache
+        - uses: actions/cache@v2
+          with:
+            path: ~/.tox
+            key: ${{ hashFiles('tox.ini') }}-${{ hashFiles('setup.py') }}-${{ hashFiles('setup.cfg') }}
       - name: Type Checker (mypy)
         run: tox -e mypy
       - name: Lint Files (flake8)
         run: tox -e pep8
       - name: Run Tests
         run: tox -e py
+      - name: Store Cache
+        - uses: actions/cache@v2
+          with:
+            path: ${{ env.pythonLocation }}
+            key: ${{ env.pythonLocation }}-${{ hashFiles('tox.ini') }}-${{ hashFiles('setup.py') }}-${{ hashFiles('setup.cfg') }}
