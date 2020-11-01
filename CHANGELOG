@@ -1,3 +1,9 @@
+# 1.2.0
+
+Added caching to test runs, badges on the README, documented all the functions, ensured
+all the functions hade proper types. Changed many of the date-related functions which
+breaks the calling contract.
+
 # 1.1.1
 
 Incorrectly versioned things again so this version should get everything back in sync.
