@@ -1,3 +1,7 @@
+# TODO: Almost all the functions in this file need
+# documentation, typing information, and cleaned-up
+# names
+
 # Standard Library
 import argparse
 import datetime
@@ -52,12 +56,16 @@ def parse_utc_timestamp(ts: int, offset: int):
     return dt
 
 
+# TODO: Rename to `parse_date_string`
 def parse_date(date_string):
     if _PARSED_DATES.get(date_string) is None:
         _PARSED_DATES[date_string] = parse(date_string)
     return _PARSED_DATES[date_string]
 
 
+# Should either use the embedded timezone in the `dt`
+# or default to UTC. Could error if the `dt` is _not_
+# TZ-aware.
 def datetime_to_timestamp(dt):
     return int(
         datetime.datetime(
@@ -72,6 +80,7 @@ def datetime_to_timestamp(dt):
     )
 
 
+# TODO: Change parameter name to `date_string`
 def date_string_to_timestamp(date):
     parsed_date = parse_date(date)
     return datetime_to_timestamp(parsed_date)
@@ -190,27 +199,40 @@ def assert_raises(fn, args, kwargs, exc):
 
 def setup_logging(
     log_level: str,
-    extra_loggers: Optional[Dict] = None,
     msg_format: Optional[str] = None,
     formatter_class_name: Optional[str] = None,
 ):
-    default_loggers: Dict[str, Dict] = {}
-    loggers = extra_loggers and {**default_loggers, **extra_loggers} or default_loggers
+    """
+    Sets up the logging system.
+    """
     msg_format = (
         msg_format
         or "%(asctime)s [%(levelname)s] %(name)s.%(funcName)s:%(lineno)s » %(message)s"
     )
     configuration: Dict[str, Any] = {
         "version": 1,
-        "formatters": {"default": {"format": msg_format}},
+        "formatters": {"console": {"format": msg_format}},
         "handlers": {
-            "default": {
+            "console": {
                 "level": log_level,
                 "class": "logging.StreamHandler",
-                "formatter": "default",
-            }
+                "formatter": "console",
+                "stream": "ext://sys.stdout",
+            },
+            "file": {
+                "level": log_level,
+                "class": "logging.handlers.RotatingFileHandler",
+                "formatter": "console",
+                "filename": "error.log",
+                "maxBytes": 1024 * 1024 * 1024,
+            },
         },
-        "loggers": loggers,
+        "root": {
+            "level": log_level,
+            "handlers": ["console", "file"],
+            "propagate": True,
+        },
+        "disable_existing_loggers": True,
     }
     if formatter_class_name:
         configuration["formatters"]["default"]["class"] = formatter_class_name
