@@ -17,9 +17,9 @@ from dateutil.tz import tzoffset, tzutc
 import requests
 
 
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 __version__ = VERSION
-version = [1, 2, 1]
+version = [1, 2, 2]
 
 _PARSED_DATES: Dict[str, datetime.datetime] = {}
 
@@ -383,7 +383,7 @@ def setup_logging(
             "handlers": ["console", "file"],
             "propagate": True,
         },
-        "disable_existing_loggers": True,
+        "disable_existing_loggers": False,
     }
     if formatter_class_name:
         configuration["formatters"]["default"]["class"] = formatter_class_name

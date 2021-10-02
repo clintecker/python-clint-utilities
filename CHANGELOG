@@ -1,3 +1,7 @@
+# 1.2.2 
+
+Stopped disabling other loggers.
+
 # 1.2.0
 
 Added caching to test runs, badges on the README, documented all the functions, ensured
